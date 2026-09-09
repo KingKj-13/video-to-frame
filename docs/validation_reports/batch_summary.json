@@ -1,0 +1,27 @@
+{
+  "total": 2,
+  "succeeded": 2,
+  "failed": 0,
+  "videos": [
+    {
+      "video": "input\\FPV Drone Flight through Beautiful Iceland Canyon_0_67.mp4",
+      "success": true,
+      "input_frames": 2011,
+      "output_frames": 1642,
+      "reduction_percent": 18.35,
+      "runtime_sec": 527.29,
+      "fps": 3.81,
+      "output_dir": "output\\FPV Drone Flight through Beautiful Iceland Canyon_0_67"
+    },
+    {
+      "video": "input\\create_a_video_liek_taken_from.mp4",
+      "success": true,
+      "input_frames": 240,
+      "output_frames": 158,
+      "reduction_percent": 34.17,
+      "runtime_sec": 60.07,
+      "fps": 4.0,
+      "output_dir": "output\\create_a_video_liek_taken_from"
+    }
+  ]
+}
