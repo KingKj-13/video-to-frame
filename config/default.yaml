@@ -1,0 +1,85 @@
+# Default configuration for the video-to-frame pipeline.
+# Every value here can be overridden by a user-supplied --config YAML file
+# (merged over these defaults) or by CLI flags (which win over both).
+
+# --- Blur handling -----------------------------------------------------
+# Laplacian-variance sharpness below hard_blur_floor is unconditionally
+# rejected (genuinely unusable). Below blur_threshold but above the floor
+# only lowers the frame's score -- it can still be kept if it is the sole
+# representative of a viewpoint (e.g. it wins its cluster anyway).
+hard_blur_floor: 30.0
+blur_threshold: 100.0
+
+# --- Redundancy / viewpoint-change ----------------------------------
+# A candidate is folded into the current redundancy cluster when its
+# similarity to a recent reference frame is >= redundancy_threshold AND
+# it isn't introducing enough new information (coverage_gain below
+# coverage_gain_threshold overrides redundancy and forces a keep).
+redundancy_threshold: 0.82
+coverage_gain_threshold: 0.15
+reference_window_size: 6
+
+# --- Minimum-overlap protection (safety net, opposite of redundancy_threshold) ---
+# redundancy_threshold asks "too similar to keep both?"; min_overlap_threshold
+# asks "if we're about to drop this frame anyway, would that leave the
+# previous kept frame and the next one too disconnected for a downstream SfM
+# feature matcher to link them?" A candidate that would otherwise be rejected
+# is force-kept if its ORB feature-overlap with the previous kept frame falls
+# below this floor. 0.30 is a conservative "bare minimum connectivity" floor,
+# not a quality target (most photogrammetry guidance wants 60%+ overlap for
+# *good* reconstructions) -- tune per dataset. Must stay below redundancy_threshold.
+min_overlap_threshold: 0.30
+
+# --- Feature extraction -------------------------------------------------
+use_sift: false          # ORB by default (faster); set true to use SIFT
+max_features: 500
+descriptor_match_ratio: 0.75    # SIFT (L2) matching: Lowe's ratio test
+orb_max_hamming_distance: 64    # ORB (Hamming) matching: cross-check + distance cutoff
+# Phase 2.5: run ORB extraction/matching on a scaled-down copy for speed.
+# null/1.0 = disabled (default, full resolution). Measured on real photos:
+# 0.75 -> ~6x faster, overlap ratios within ~0.04 of full-res; 0.5 -> ~12x
+# faster, within ~0.07; 0.25 was measurably too aggressive (keypoint counts
+# approach the low-texture floor). Never affects blur detection or output
+# frames -- only what ORB is computed from.
+analysis_scale: null
+
+# --- Global coverage pool (guards against loop-closures / revisits) ----
+coverage_pool_max_per_frame: 60
+coverage_pool_max_size: 20000
+
+# --- Scoring weights -----------------------------------------------------
+# score = q*quality + s*sharpness + f*features + v*viewpoint + c*coverage - r*redundancy
+weights:
+  quality: 1.0
+  sharpness: 1.0
+  features: 0.5
+  viewpoint: 1.5
+  coverage: 1.5
+  redundancy: 2.0
+
+# --- Frame-count bounds (optional safety net) ---------------------------
+min_frames: null   # informational only -- cannot invent frames that don't exist
+max_frames: null   # if set and exceeded, lowest-scoring kept frames are dropped
+
+# --- Compression (independent of selection) -----------------------------
+# Quality-first defaults: full resolution, lossless PNG, since output feeds a
+# downstream 3D reconstruction model. For a smaller, lossy "compact mode",
+# set output_format to webp/jpg and/or set resize_long_edge.
+resize_long_edge: null
+resize_width: null
+resize_height: null
+output_format: png   # png (default, lossless) | webp | jpg
+output_quality: 90   # only applies to webp/jpg
+# PNG is always lossless regardless of this value -- it only trades encode
+# speed for file size (level 9 costs ~30x level 1's time on a real photo for
+# ~25% smaller output, per Phase 2.5 profiling). Default fast; raise only if
+# smaller PNGs matter more than encode time.
+png_compression_level: 1
+
+# --- Preview video --------------------------------------------------------
+preview_fps: 5.0
+
+# --- Exposure gating (feeds into quality score) --------------------------
+exposure_low: 15
+exposure_high: 240
+exposure_min_contrast: 10.0

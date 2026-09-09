@@ -1,0 +1,29 @@
+# Generated pipeline output (large binary frame sets, previews)
+/output/
+/phase4_final_comparison/
+
+# Generated benchmark videos/run-output (regenerate via phase1/benchmarks/generators.py
+# and phase1/evaluate; real drone/handheld footage here duplicates input/)
+/phase1/benchmarks/*/
+!/phase1/benchmarks/generators.py
+
+# Local Claude Code session state, not project content
+/.claude/
+
+# Sample/input videos -- drop your own into input/, not tracked
+/input/*
+!/input/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+.venv/
+venv/
+
+# OS/editor
+.DS_Store
+Thumbs.db
