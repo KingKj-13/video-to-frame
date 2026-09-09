@@ -51,6 +51,16 @@ The `aggressive` preset exists for cases where more reduction is wanted
 without weakening the minimum-overlap safety floor; see the README's
 Presets section.
 
+## Higher-reduction configuration
+
+A validated recipe (`--preset aggressive --hard-blur-floor 50`) achieves
+64.3% reduction on the drone video and 62.1% on the handheld video, in
+6.2 min and 60s respectively, with 0 weak links / 0 low-texture pairs on
+both (real ORB connectivity, not just the safety-net counter). See
+[high_reduction_config/README.md](high_reduction_config/README.md) for the
+full evidence, and why this is a documented recipe rather than a new
+default.
+
 ## Note on this specific run's frames/preview output
 
 The full-resolution `frames/` directories and `optimized_preview.mp4` files

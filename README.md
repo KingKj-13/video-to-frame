@@ -61,6 +61,13 @@ individual threshold flags so those still win):
 video-to-frame --preset quality_first
 ```
 
+For footage where more reduction is wanted, `--preset aggressive --hard-blur-floor <N>`
+(with `<N>` chosen for your footage's actual sharpness distribution, not
+guessed) is a validated combination -- see
+[docs/validation_reports/high_reduction_config/](docs/validation_reports/high_reduction_config/)
+for real-footage evidence (64.3%/62.1% reduction, 0 weak links) and how to
+verify it holds on your own footage before relying on it.
+
 ### Subcommands
 
 `process` (the default when no subcommand is named -- `video-to-frame INPUT.mp4 --output OUT`
